@@ -1,12 +1,10 @@
-import json
+import streamlit as st
 from supabase import create_client
 
 def get_supabase_client():
     """
-    Crea y devuelve un cliente Supabase utilizando credenciales de un archivo separado.
+    Crea y devuelve un cliente Supabase utilizando secrets de Streamlit.
     """
-    with open("supabase_config.json", "r") as file:
-        config = json.load(file)
-        url = config["url"]
-        key = config["key"]
+    url = st.secrets["url"]
+    key = st.secrets["key"]
     return create_client(url, key)

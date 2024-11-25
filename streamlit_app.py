@@ -12,7 +12,7 @@ with st.sidebar:
         menu_title="AFP Provida",
         options=["Tamano fondo", "Cuota", "Admin"],
         icons=["bar-chart", "cash", "gear"],
-        menu_icon="cast",
+        menu_icon="rocket",
         default_index=1,
     )
 
@@ -25,8 +25,6 @@ if selected == "Cuota":
 elif selected == "Tamano fondo":
     st.title("Tamano fondo")
     st.write("Aquí puedes ver y gestionar el tamaño de los fondos.")
-
-
 
 elif selected == "Admin":
     st.title("Admin")
