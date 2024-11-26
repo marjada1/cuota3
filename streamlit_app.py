@@ -3,7 +3,6 @@ import pandas as pd
 from streamlit_option_menu import option_menu
 from streamlit_supabase_config import get_supabase_client
 from ws_super import realizar_webscraping
-from cuprum import fetch_fondos
 from manual_ingreso import ingreso_manual
 from diaria import mostrar_rentabilidad_provida
 import asyncio
@@ -29,13 +28,6 @@ with st.sidebar:
         default_index=0,
     )
 
-# Función para ejecutar fetch_fondos directamente en el bucle de eventos
-async def run_fetch_fondos():
-    try:
-        return await fetch_fondos()
-    except Exception as e:
-        logging.error(f"Error al ejecutar fetch_fondos: {e}")
-        return {"error": str(e)}
 
 # Configuración de las páginas
 if selected == "Cuota":
@@ -53,16 +45,6 @@ if selected == "Cuota":
         except Exception as e:
             st.error(f"Error al ejecutar WS Super: {e}")
 
-    # Botón para ejecutar fetch_fondos
-    if st.button("Correr Cuprum"):
-        try:
-            resultado_cuprum = asyncio.run(run_fetch_fondos())
-            if "error" not in resultado_cuprum:
-                st.success(f"Fondos obtenidos: {resultado_cuprum['fondos']}")
-            else:
-                st.error(f"Cuprum: {resultado_cuprum['error']}")
-        except Exception as e:
-            st.error(f"Error al ejecutar Cuprum: {e}")
 
 elif selected == "Manual":
     ingreso_manual()
