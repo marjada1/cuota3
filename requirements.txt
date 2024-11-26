@@ -10,3 +10,4 @@ asyncio
 nest-asyncio
 logging
 requests-html
+lxml
