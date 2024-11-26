@@ -2,3 +2,10 @@ streamlit
 pandas
 supabase
 streamlit-option-menu
+requests
+beautifulsoup4
+uuid
+python-dotenv
+asyncio
+nest-asyncio
+logging

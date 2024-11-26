@@ -1,0 +1,120 @@
+2024-11-25 22:03:40,643 - INFO - Iniciando el proceso de web scraping para Cuprum...
+2024-11-25 22:03:40,990 - WARNING - Formato de fecha inválido: 
+2024-11-25 22:03:40,991 - INFO - Datos obtenidos del scraping: [
+    {
+        "id": "e641b397-9e25-423c-aedd-e9bba6e11017",
+        "afp": "CUPRUM",
+        "fondo": "FECHA-ACTUALIZACION",
+        "fecha": null,
+        "valor_cuota": "",
+        "hora_de_agregacion": "2024-11-25 22:03:40",
+        "fuente": "Web Scraping Cuprum"
+    },
+    {
+        "id": "334e01af-a2d0-4f75-bc5f-de6094cf4858",
+        "afp": "CUPRUM",
+        "fondo": "A",
+        "fecha": null,
+        "valor_cuota": "",
+        "hora_de_agregacion": "2024-11-25 22:03:40",
+        "fuente": "Web Scraping Cuprum"
+    },
+    {
+        "id": "8c42a036-1b14-4c17-a56b-08ee92784c24",
+        "afp": "CUPRUM",
+        "fondo": "B",
+        "fecha": null,
+        "valor_cuota": "",
+        "hora_de_agregacion": "2024-11-25 22:03:40",
+        "fuente": "Web Scraping Cuprum"
+    },
+    {
+        "id": "401c50ee-d4c9-4892-aa76-3686ae39bcbf",
+        "afp": "CUPRUM",
+        "fondo": "C",
+        "fecha": null,
+        "valor_cuota": "",
+        "hora_de_agregacion": "2024-11-25 22:03:40",
+        "fuente": "Web Scraping Cuprum"
+    },
+    {
+        "id": "73d7380a-ad8f-4eff-8b22-6a88ee0303f5",
+        "afp": "CUPRUM",
+        "fondo": "D",
+        "fecha": null,
+        "valor_cuota": "",
+        "hora_de_agregacion": "2024-11-25 22:03:40",
+        "fuente": "Web Scraping Cuprum"
+    },
+    {
+        "id": "c2650619-2081-487a-93c8-52656bc5187a",
+        "afp": "CUPRUM",
+        "fondo": "E",
+        "fecha": null,
+        "valor_cuota": "",
+        "hora_de_agregacion": "2024-11-25 22:03:40",
+        "fuente": "Web Scraping Cuprum"
+    }
+]
+2024-11-25 22:03:41,365 - INFO - Datos enviados correctamente a Supabase.
+2024-11-25 22:03:41,367 - INFO - Resultado final: {'success': 'Datos guardados correctamente en Supabase', 'fondos': {'FECHA-ACTUALIZACION': '', 'A': '', 'B': '', 'C': '', 'D': '', 'E': ''}}
+2024-11-25 22:03:57,333 - INFO - Iniciando el proceso de web scraping para Cuprum...
+2024-11-25 22:03:57,571 - WARNING - Formato de fecha inválido: 
+2024-11-25 22:03:57,571 - INFO - Datos obtenidos del scraping: [
+    {
+        "id": "2466635c-f318-4cb1-bc84-3fb950fb34f8",
+        "afp": "CUPRUM",
+        "fondo": "FECHA-ACTUALIZACION",
+        "fecha": null,
+        "valor_cuota": "",
+        "hora_de_agregacion": "2024-11-25 22:03:57",
+        "fuente": "Web Scraping Cuprum"
+    },
+    {
+        "id": "c77eb745-282f-4fba-8111-dbf6c3c64b99",
+        "afp": "CUPRUM",
+        "fondo": "A",
+        "fecha": null,
+        "valor_cuota": "",
+        "hora_de_agregacion": "2024-11-25 22:03:57",
+        "fuente": "Web Scraping Cuprum"
+    },
+    {
+        "id": "87588535-e909-47d2-af8d-c565cd59b66a",
+        "afp": "CUPRUM",
+        "fondo": "B",
+        "fecha": null,
+        "valor_cuota": "",
+        "hora_de_agregacion": "2024-11-25 22:03:57",
+        "fuente": "Web Scraping Cuprum"
+    },
+    {
+        "id": "953037aa-5d7a-4417-aa19-bde9722fbe27",
+        "afp": "CUPRUM",
+        "fondo": "C",
+        "fecha": null,
+        "valor_cuota": "",
+        "hora_de_agregacion": "2024-11-25 22:03:57",
+        "fuente": "Web Scraping Cuprum"
+    },
+    {
+        "id": "d6f12611-cec8-4e0e-89b8-04f12a2193d0",
+        "afp": "CUPRUM",
+        "fondo": "D",
+        "fecha": null,
+        "valor_cuota": "",
+        "hora_de_agregacion": "2024-11-25 22:03:57",
+        "fuente": "Web Scraping Cuprum"
+    },
+    {
+        "id": "90b6c001-f88e-44be-b676-82eec1443afe",
+        "afp": "CUPRUM",
+        "fondo": "E",
+        "fecha": null,
+        "valor_cuota": "",
+        "hora_de_agregacion": "2024-11-25 22:03:57",
+        "fuente": "Web Scraping Cuprum"
+    }
+]
+2024-11-25 22:03:57,816 - INFO - Datos enviados correctamente a Supabase.
+2024-11-25 22:03:57,816 - INFO - Resultado final: {'success': 'Datos guardados correctamente en Supabase', 'fondos': {'FECHA-ACTUALIZACION': '', 'A': '', 'B': '', 'C': '', 'D': '', 'E': ''}}
