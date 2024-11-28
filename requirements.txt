@@ -11,3 +11,5 @@ nest-asyncio
 logging
 requests-html
 lxml
+streamlit-dash
+dash

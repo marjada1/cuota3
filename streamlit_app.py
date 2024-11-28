@@ -9,6 +9,8 @@ from dolar import Mindicador
 import asyncio
 import logging
 import nest_asyncio
+import plotly.express as px
+import streamlit as st
 
 # Configurar logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -64,6 +66,8 @@ elif selected == "Manual":
 elif selected == "Tamano fondo":
     st.title("Tamano fondo")
     st.write("Aquí puedes ver y gestionar el tamaño de los fondos.")
+    # Integrar el gráfico de Dash
+ 
 
 elif selected == "Admin":
     st.title("Admin")
