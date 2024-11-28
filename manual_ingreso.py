@@ -56,8 +56,8 @@ def ingreso_manual():
 
             if response.status_code in [200, 201]:
                 st.success("Cuota ingresada con éxito.")
-                # Mostrar una notificación tipo "toast" con Streamlit
-                st.toast("Celebración: ¡La cuota fue ingresada exitosamente!")
+                # Mostrar serpentinas de celebración con Streamlit
+                st.balloons()
             else:
                 st.error(f"Error al guardar los datos: {response.text}")
 
