@@ -53,6 +53,10 @@ def mostrar_rentabilidad(tabla, titulo):
         # Transformar los datos para el formato deseado
         df_transformado = transformar_rentabilidad(df)
 
+        # Redondear todos los valores numéricos a enteros
+        for col in df_transformado.select_dtypes(include=['float']).columns:
+            df_transformado[col] = df_transformado[col].round(0).astype('Int64')  # Manejo de NaN como valores enteros nulos
+
         # Establecer la columna "AFP" como índice
         df_transformado.set_index("AFP", inplace=True)
 
@@ -64,15 +68,11 @@ def mostrar_rentabilidad(tabla, titulo):
 
         styled_df = df_transformado.style.applymap(resaltar_negativos)
 
-        # Reducir el tamaño de la letra
-        styled_df = styled_df.set_properties(**{'font-size': '8pt'})
-
         # Mostrar la tabla transformada con el índice completo y estilos
         st.write(f"#### {titulo}")
         st.dataframe(styled_df, use_container_width=False)
     else:
         st.error(f"No se encontraron datos en la tabla {tabla}.")
-
 
 
 
