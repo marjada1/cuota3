@@ -64,11 +64,15 @@ def mostrar_rentabilidad(tabla, titulo):
 
         styled_df = df_transformado.style.applymap(resaltar_negativos)
 
+        # Reducir el tamaño de la letra
+        styled_df = styled_df.set_properties(**{'font-size': '8pt'})
+
         # Mostrar la tabla transformada con el índice completo y estilos
         st.write(f"#### {titulo}")
         st.dataframe(styled_df, use_container_width=False)
     else:
         st.error(f"No se encontraron datos en la tabla {tabla}.")
+
 
 
 
