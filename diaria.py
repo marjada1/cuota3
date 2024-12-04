@@ -69,7 +69,7 @@ def mostrar_rentabilidad(tabla, titulo):
 
         # Mostrar la tabla transformada con el índice completo y estilos
         st.write(f"#### {titulo}")
-        st.dataframe(styled_df, use_container_width=True)
+        st.dataframe(styled_df, use_container_width=False)
     else:
         st.error(f"No se encontraron datos en la tabla {tabla}.")
 
