@@ -2,8 +2,8 @@ import streamlit as st
 import pandas as pd
 import requests
 
-# Función para obtener datos de la tabla "diaria_provida" desde Supabase
-def obtener_rentabilidad_provida():
+# Función genérica para obtener datos desde Supabase
+def obtener_rentabilidad(tabla):
     # Headers para la solicitud
     headers = {
         "Content-Type": "application/json",
@@ -11,8 +11,8 @@ def obtener_rentabilidad_provida():
         "Authorization": f"Bearer {st.secrets['key']}"
     }
 
-    # Endpoint para consultar la tabla diaria_provida
-    url = f"{st.secrets['url']}/rest/v1/diaria_provida"
+    # Endpoint para consultar la tabla específica
+    url = f"{st.secrets['url']}/rest/v1/{tabla}"
 
     try:
         response = requests.get(url, headers=headers)
@@ -23,13 +23,14 @@ def obtener_rentabilidad_provida():
             df = pd.DataFrame(data)
             return df
         else:
-            st.error(f"Error al obtener datos: {response.text}")
+            st.error(f"Error al obtener datos de {tabla}: {response.text}")
             return pd.DataFrame()
     except Exception as e:
-        st.error(f"Error de conexión: {str(e)}")
+        st.error(f"Error de conexión al obtener {tabla}: {str(e)}")
         return pd.DataFrame()
 
-def transformar_rentabilidad_provida(df):
+# Función genérica para transformar los datos
+def transformar_rentabilidad(df):
     # Verificar que el DataFrame no esté vacío
     if df.empty:
         st.error("El DataFrame está vacío. No se puede transformar.")
@@ -44,16 +45,45 @@ def transformar_rentabilidad_provida(df):
 
     return df_pivot
 
-def mostrar_rentabilidad_provida():
+def mostrar_rentabilidad(tabla, titulo):
     # Obtener datos
-    df = obtener_rentabilidad_provida()
+    df = obtener_rentabilidad(tabla)
 
     if not df.empty:
         # Transformar los datos para el formato deseado
-        df_transformado = transformar_rentabilidad_provida(df)
+        df_transformado = transformar_rentabilidad(df)
 
-        # Mostrar la tabla transformada en la aplicación
-        st.write("#### Diaria:")
-        st.dataframe(df_transformado, use_container_width=True)
+        # Establecer la columna "AFP" como índice
+        df_transformado.set_index("AFP", inplace=True)
+
+        # Aplicar estilo para resaltar valores menores a cero con fondo amarillo claro y texto negro
+        def resaltar_negativos(val):
+            if isinstance(val, (int, float)) and val < 0:
+                return 'background-color: #FFFACD; color: black;'  # Fondo amarillo claro, texto negro
+            return 'color: black;'  # Asegura que el texto sea negro en todos los casos
+
+        styled_df = df_transformado.style.applymap(resaltar_negativos)
+
+        # Mostrar la tabla transformada con el índice completo y estilos
+        st.write(f"#### {titulo}")
+        st.dataframe(styled_df, use_container_width=False)
     else:
-        st.error("No se encontraron datos en la tabla diaria_provida.")
+        st.error(f"No se encontraron datos en la tabla {tabla}.")
+
+
+
+# Mostrar rentabilidades diarias, mensuales y anuales
+def main():
+    st.title("Rentabilidades AFP Provida")
+
+    # Diaria
+    mostrar_rentabilidad("diaria_provida", "Diaria")
+
+    # Mensual
+    mostrar_rentabilidad("mensual_provida", "Mensual")
+
+    # Anual
+    mostrar_rentabilidad("anual_provida", "Anual")
+
+if __name__ == "__main__":
+    main()

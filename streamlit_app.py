@@ -4,13 +4,12 @@ from streamlit_option_menu import option_menu
 from streamlit_supabase_config import get_supabase_client
 from ws_super import realizar_webscraping
 from manual_ingreso import ingreso_manual
-from diaria import mostrar_rentabilidad_provida
+from diaria import mostrar_rentabilidad
 from dolar import Mindicador
 import asyncio
 import logging
 import nest_asyncio
 import plotly.express as px
-import streamlit as st
 
 # Configurar logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -31,20 +30,16 @@ with st.sidebar:
         default_index=0,
     )
 
-
 # Configuración de las páginas
 if selected == "Cuota":
-    st.title("Cuota")
+    st.title("Rentabilidad Relativa 📊")
 
-    # Botón para ejecutar ws_super y mostrar rentabilidad
-    if st.button("Correr proceso"):
+    # Botón para refrescar los datos (en la parte superior)
+    if st.button("Calcula la Cuota"):
         try:
             # Ejecutar el proceso de web scraping
             resultado_ws_super = realizar_webscraping()
-            if "success" in resultado_ws_super:
-                st.success(f"WS Super: {resultado_ws_super['success']}")
-                mostrar_rentabilidad_provida()  # Mostrar la tabla después de ejecutar el proceso
-            else:
+            if "success" not in resultado_ws_super:
                 st.error(f"WS Super: {resultado_ws_super['error']}")
 
             # Ejecutar el proceso de Mindicador
@@ -52,13 +47,18 @@ if selected == "Cuota":
             api_mindicador = Mindicador(indicador)
             ultimos_dias = api_mindicador.InfoUltimosDias(dias=3)
 
-            if ultimos_dias:
-                st.success("Datos del dólar extraídos y guardados correctamente en Supabase.")
-            else:
+            if not ultimos_dias:
                 st.error("No se pudieron extraer o guardar los datos del dólar.")
+           
 
         except Exception as e:
             st.error(f"Error al ejecutar WS Super: {e}")
+
+    # Mostrar las rentabilidades siempre, incluso antes de presionar el botón
+    
+    mostrar_rentabilidad("diaria_provida", "Diaria")
+    mostrar_rentabilidad("mensual_provida", "Mensual")
+    mostrar_rentabilidad("anual_provida", "Anual")
 
 elif selected == "Manual":
     ingreso_manual()
@@ -67,7 +67,6 @@ elif selected == "Tamano fondo":
     st.title("Tamano fondo")
     st.write("Aquí puedes ver y gestionar el tamaño de los fondos.")
     # Integrar el gráfico de Dash
- 
 
 elif selected == "Admin":
     st.title("Admin")
