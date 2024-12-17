@@ -4,6 +4,12 @@ from bs4 import BeautifulSoup
 import json
 from datetime import datetime
 import uuid
+import math
+
+# Función para dividir la lista de datos en lotes pequeños
+def dividir_en_lotes(lista, tamaño_lote):
+    for i in range(0, len(lista), tamaño_lote):
+        yield lista[i:i + tamaño_lote]
 
 def realizar_webscraping():
     print("Iniciando el proceso de web scraping...")
@@ -28,14 +34,12 @@ def realizar_webscraping():
             response = requests.get(url, timeout=10)
             if response.status_code == 200:
                 soup = BeautifulSoup(response.content, 'html.parser')
-                # Buscar la tabla específica que contiene la fecha
                 tables = soup.find_all('table', class_='table table-striped table-hover table-bordered table-condensed')
                 if len(tables) > 1:
                     date_table = tables[1]
-                    # Buscar el centro que contiene la fecha
                     center_tag = date_table.find('center')
                     if center_tag:
-                        date_text = center_tag.text.strip().split()[0]  # Extraer la fecha
+                        date_text = center_tag.text.strip().split()[0]
                         dia, mes_texto, anio = date_text.split("-")
                         mes = meses.get(mes_texto, "01")
                         fecha_actualizacion_formateada = f"{anio}-{mes}-{dia.zfill(2)}"
@@ -51,7 +55,6 @@ def realizar_webscraping():
                             valor_cuota = columns[1].text.strip().replace(".", "").replace(",", ".")
                             valor_patrimonio = columns[2].text.strip().replace(",", ".")
 
-                            # Verificar si valor_cuota o valor_patrimonio contienen "(*)"
                             if valor_cuota == "(*)" or valor_patrimonio == "(*)":
                                 print(f"Omitiendo datos inválidos para AFP: {afp}, Fondo: {fondo}")
                                 continue
@@ -73,22 +76,29 @@ def realizar_webscraping():
     if not data:
         return {"error": "No se pudieron obtener datos de los fondos"}
 
+    # Enviar datos en lotes pequeños
+    tamaño_lote = 50  # Ajusta este valor según las limitaciones del servidor
     headers = {
         "Content-Type": "application/json",
         "apikey": st.secrets["key"],
         "Authorization": f"Bearer {st.secrets['key']}"
     }
 
-    response = requests.post(
-        f"{st.secrets['url']}/rest/v1/fondos",
-        headers=headers,
-        data=json.dumps(data)
-    )
+    for lote in dividir_en_lotes(data, tamaño_lote):
+        try:
+            response = requests.post(
+                f"{st.secrets['url']}/rest/v1/fondos",
+                headers=headers,
+                data=json.dumps(lote)
+            )
+            if response.status_code in [200, 201]:
+                print(f"Lote de {len(lote)} datos guardado correctamente.")
+            else:
+                print(f"Error al guardar el lote: {response.text}")
+        except requests.exceptions.RequestException as e:
+            print(f"Error al enviar lote: {e}")
 
-    if response.status_code in [200, 201]:
-        return {"success": "Datos guardados correctamente en Supabase"}
-    else:
-        return {"error": f"No se pudieron guardar los datos: {response.text}"}
+    return {"success": "Proceso de carga completado en lotes."}
 
 if __name__ == "__main__":
     resultado = realizar_webscraping()
