@@ -50,7 +50,6 @@ if selected == "Cuota":
             if not ultimos_dias:
                 st.error("No se pudieron extraer o guardar los datos del dólar.")
            
-
         except Exception as e:
             st.error(f"Error al ejecutar WS Super: {e}")
 
