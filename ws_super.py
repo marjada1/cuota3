@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import json
 from datetime import datetime
 import uuid
-import math
+import time
 
 # Función para dividir la lista de datos en lotes pequeños
 def dividir_en_lotes(lista, tamaño_lote):
@@ -31,7 +31,7 @@ def realizar_webscraping():
 
     for fondo, url in urls_fondos.items():
         try:
-            response = requests.get(url, timeout=10)
+            response = requests.get(url, timeout=15)  # Aumenta el tiempo de espera
             if response.status_code == 200:
                 soup = BeautifulSoup(response.content, 'html.parser')
                 tables = soup.find_all('table', class_='table table-striped table-hover table-bordered table-condensed')
@@ -76,8 +76,8 @@ def realizar_webscraping():
     if not data:
         return {"error": "No se pudieron obtener datos de los fondos"}
 
-    # Enviar datos en lotes pequeños
-    tamaño_lote = 50  # Ajusta este valor según las limitaciones del servidor
+    # Enviar datos en lotes pequeños con reintentos
+    tamaño_lote = 20  # Lotes más pequeños para evitar timeout
     headers = {
         "Content-Type": "application/json",
         "apikey": st.secrets["key"],
@@ -85,18 +85,30 @@ def realizar_webscraping():
     }
 
     for lote in dividir_en_lotes(data, tamaño_lote):
-        try:
-            response = requests.post(
-                f"{st.secrets['url']}/rest/v1/fondos",
-                headers=headers,
-                data=json.dumps(lote)
-            )
-            if response.status_code in [200, 201]:
-                print(f"Lote de {len(lote)} datos guardado correctamente.")
-            else:
-                print(f"Error al guardar el lote: {response.text}")
-        except requests.exceptions.RequestException as e:
-            print(f"Error al enviar lote: {e}")
+        intentos = 0
+        max_intentos = 3
+        while intentos < max_intentos:
+            try:
+                response = requests.post(
+                    f"{st.secrets['url']}/rest/v1/fondos",
+                    headers=headers,
+                    data=json.dumps(lote),
+                    timeout=15  # Tiempo de espera para evitar bloqueos
+                )
+                if response.status_code in [200, 201]:
+                    print(f"Lote de {len(lote)} datos guardado correctamente.")
+                    break
+                else:
+                    print(f"Error al guardar el lote: {response.text}")
+                    intentos += 1
+                    time.sleep(2)  # Esperar antes de reintentar
+            except requests.exceptions.RequestException as e:
+                print(f"Error al enviar lote: {e}")
+                intentos += 1
+                time.sleep(2)
+
+        if intentos == max_intentos:
+            print(f"Fallo al guardar el lote después de {max_intentos} intentos.")
 
     return {"success": "Proceso de carga completado en lotes."}
 
