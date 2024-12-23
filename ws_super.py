@@ -11,6 +11,13 @@ def dividir_en_lotes(lista, tamaño_lote):
     for i in range(0, len(lista), tamaño_lote):
         yield lista[i:i + tamaño_lote]
 
+# Función para guardar datos localmente en caso de error
+def guardar_respaldo_local(datos, nombre_archivo="respaldo_datos.json"):
+    with open(nombre_archivo, "w", encoding="utf-8") as archivo:
+        json.dump(datos, archivo, ensure_ascii=False, indent=4)
+    print(f"Datos respaldados localmente en {nombre_archivo}")
+
+# Función principal para realizar scraping
 def realizar_webscraping():
     print("Iniciando el proceso de web scraping...")
     urls_fondos = {
@@ -31,7 +38,7 @@ def realizar_webscraping():
 
     for fondo, url in urls_fondos.items():
         try:
-            response = requests.get(url, timeout=15)  # Aumenta el tiempo de espera
+            response = requests.get(url, timeout=15)
             if response.status_code == 200:
                 soup = BeautifulSoup(response.content, 'html.parser')
                 tables = soup.find_all('table', class_='table table-striped table-hover table-bordered table-condensed')
@@ -74,43 +81,51 @@ def realizar_webscraping():
             print(f"Error al obtener datos del fondo {fondo}: {e}")
 
     if not data:
+        print("No se obtuvieron datos del scraping.")
         return {"error": "No se pudieron obtener datos de los fondos"}
 
     # Enviar datos en lotes pequeños con reintentos
-    tamaño_lote = 20  # Lotes más pequeños para evitar timeout
+    tamaño_lote = 10  # Lotes pequeños para mayor confiabilidad
     headers = {
         "Content-Type": "application/json",
         "apikey": st.secrets["key"],
         "Authorization": f"Bearer {st.secrets['key']}"
     }
 
+    errores = []
     for lote in dividir_en_lotes(data, tamaño_lote):
         intentos = 0
         max_intentos = 3
+        exito = False
         while intentos < max_intentos:
             try:
                 response = requests.post(
                     f"{st.secrets['url']}/rest/v1/fondos",
                     headers=headers,
                     data=json.dumps(lote),
-                    timeout=15  # Tiempo de espera para evitar bloqueos
+                    timeout=15
                 )
                 if response.status_code in [200, 201]:
                     print(f"Lote de {len(lote)} datos guardado correctamente.")
+                    exito = True
                     break
                 else:
                     print(f"Error al guardar el lote: {response.text}")
                     intentos += 1
-                    time.sleep(2)  # Esperar antes de reintentar
+                    time.sleep(2)
             except requests.exceptions.RequestException as e:
                 print(f"Error al enviar lote: {e}")
                 intentos += 1
                 time.sleep(2)
 
-        if intentos == max_intentos:
-            print(f"Fallo al guardar el lote después de {max_intentos} intentos.")
+        if not exito:
+            errores.extend(lote)
 
-    return {"success": "Proceso de carga completado en lotes."}
+    if errores:
+        print(f"Fallo en {len(errores)} registros. Se respaldarán localmente.")
+        guardar_respaldo_local(errores)
+
+    return {"success": "Proceso de carga completado con posibles errores respaldados."}
 
 if __name__ == "__main__":
     resultado = realizar_webscraping()
